@@ -1,0 +1,315 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>OZON 入局自测 · 7 个问题看你能做多少分</title>
+<style>
+:root{--ink:#15171b;--mut:#6b7280;--line:#e6e8ec;--bg:#f5f6f8;--card:#fff;
+--go:#0a7d55;--warn:#b45309;--stop:#c0392b;--acc:#c8102e}
+*{box-sizing:border-box;-webkit-tap-highlight-color:transparent}
+body{margin:0;background:var(--bg);color:var(--ink);
+font:16px/1.65 -apple-system,"PingFang SC","Microsoft YaHei",system-ui,sans-serif;
+padding:20px 14px 90px}
+.wrap{max-width:620px;margin:0 auto}
+header{margin-bottom:16px}
+h1{font-size:21px;margin:0 0 6px;letter-spacing:-.3px}
+.sub{color:var(--mut);font-size:13.5px;margin:0}
+.q{background:var(--card);border:1px solid var(--line);border-radius:14px;padding:16px;margin:12px 0}
+.q h2{font-size:15px;margin:0 0 4px;font-weight:600}
+.why{color:var(--mut);font-size:12px;margin:0 0 10px}
+.opts{display:flex;flex-direction:column;gap:8px}
+button.opt{text-align:left;font:inherit;font-size:14.5px;line-height:1.45;
+background:#fbfbfc;border:1px solid var(--line);color:var(--ink);
+padding:11px 13px;border-radius:11px;cursor:pointer;transition:.12s}
+button.opt:active{transform:scale(.995)}
+button.opt.sel{border-color:var(--acc);background:#fff5f6;box-shadow:0 0 0 1px var(--acc) inset}
+button.opt .pt{float:right;color:var(--mut);font-size:12px;margin-left:8px}
+button.opt.sel .pt{color:var(--acc);font-weight:600}
+.bar{position:sticky;bottom:0;background:rgba(245,246,248,.95);backdrop-filter:blur(8px);
+padding:10px 0;margin-top:8px}
+.scoreline{display:flex;align-items:center;justify-content:space-between;font-size:13px;color:var(--mut)}
+.track{height:8px;background:#e9ebef;border-radius:99px;overflow:hidden;margin-top:6px}
+.fill{height:100%;width:0;background:var(--acc);transition:width .25s}
+.card{background:var(--card);border:1px solid var(--line);border-radius:16px;padding:18px;margin:16px 0}
+.verdict{font-size:19px;font-weight:700;padding:14px 16px;border-radius:12px;line-height:1.5}
+.v-go{background:#eefaf4;color:var(--go);border-left:5px solid var(--go)}
+.v-warn{background:#fff8eb;color:var(--warn);border-left:5px solid var(--warn)}
+.v-stop{background:#fdf0ee;color:var(--stop);border-left:5px solid var(--stop)}
+.big{font-size:34px;font-weight:800;letter-spacing:-1px;line-height:1}
+.big small{font-size:14px;font-weight:500;color:var(--mut);letter-spacing:0}
+h3{font-size:13px;color:var(--mut);font-weight:600;margin:16px 0 6px;letter-spacing:.3px}
+ul{margin:6px 0;padding-left:19px}
+li{margin:5px 0;font-size:14.5px}
+.red{background:#fdf0ee;border:1px solid #c0392b33;border-radius:12px;padding:13px 15px;margin:10px 0;font-size:14px;color:#8e2b21}
+button.copy{width:100%;margin-top:14px;font:inherit;font-weight:600;font-size:15px;
+background:var(--acc);color:#fff;border:none;border-radius:12px;padding:14px;cursor:pointer}
+.foot{color:var(--mut);font-size:12px;margin-top:18px;border-top:1px dashed var(--line);padding-top:12px;line-height:1.6}
+.tag{display:inline-block;font-size:11.5px;color:var(--mut);border:1px solid var(--line);
+padding:1px 7px;border-radius:99px;margin-right:6px}
+.mat li{margin:7px 0;font-size:14.5px;line-height:1.5}
+.mat li b{font-weight:600}
+.note{color:var(--mut);font-size:12.5px;margin:10px 0 0;line-height:1.6}
+</style>
+</head>
+<body>
+<div class="wrap">
+  <header>
+    <h1>你适不适合做 OZON</h1>
+    <p class="sub">7 个问题，满分 100。选完立刻出分数、最弱的一项和第一件该做的事。</p>
+  </header>
+
+  <div id="qs"></div>
+
+  <div class="bar">
+    <div class="scoreline"><span>当前得分</span><span><b id="score">0</b> / 100</span></div>
+    <div class="track"><div class="fill" id="fill"></div></div>
+  </div>
+
+  <div id="result" class="card" style="display:none"></div>
+
+  <div class="foot">
+    <span class="tag">不收费</span><span class="tag">不留手机号</span><span class="tag">不上传任何数据</span><br>
+    这个分数是参考，不是保证。平台没有保证金、没有月租；任何让你先交「保证金 / 代注册费 / 内部名额费」的，都不是官方流程。
+  </div>
+</div>
+
+<script>
+const QS = [
+  {id:'exp', max:18, q:'1. 你有电商运营经验吗（国内电商也算）',
+   why:'会不会看数据、会不会算账，决定你踩坑的速度',
+   opts:[
+     {t:'做过国内电商，而且出过单', p:18},
+     {t:'做过，但没出过单', p:11},
+     {t:'看过很多，没真正上手', p:5},
+     {t:'完全没有', p:0}]},
+
+  {id:'sup', max:16, q:'2. 你有供应链资源吗',
+   why:'能不能小批量拿到货、能不能比价',
+   opts:[
+     {t:'有工厂或档口关系，能小批量拿货', p:16},
+     {t:'能在 1688 找到货，会比价', p:11},
+     {t:'知道去哪买，但没谈过', p:4},
+     {t:'完全没有', p:0}]},
+
+  {id:'cat', max:10, q:'3. 有你自己擅长的产品吗',
+   why:'懂不懂这个品，决定你会不会被低价卷死',
+   opts:[
+     {t:'有明确擅长的品类，熟悉成本和坑', p:10},
+     {t:'有感兴趣的品类，还没深入', p:6},
+     {t:'什么都行，听别人说', p:2},
+     {t:'完全没想法', p:0}]},
+
+  {id:'cash', max:25, q:'4. 你能拿出多少钱（不含生活费）',
+   why:'货款是立刻出去的，钱回到你卡上要 45 天以上',
+   opts:[
+     {t:'3 万以上', p:25},
+     {t:'2 – 3 万', p:21},
+     {t:'1 – 2 万', p:15},
+     {t:'5000 – 1 万', p:7},
+     {t:'5000 以下', p:0}]},
+
+  {id:'time', max:8, q:'5. 每天能真正投入多久',
+   why:'决定你能不能做完每天的日常动作',
+   opts:[
+     {t:'3 小时以上', p:8},
+     {t:'1 – 3 小时', p:5},
+     {t:'不到 1 小时', p:0}]},
+
+  {id:'pc', max:8, q:'6. 电脑基础操作怎么样',
+   why:'上架、看后台、改价格都要用电脑',
+   opts:[
+     {t:'装软件、填表、看后台、用表格都没问题', p:8},
+     {t:'基本会用，遇到问题要找人帮忙', p:5},
+     {t:'基本不用电脑，打字都费劲', p:0}]}
+,
+  {id:'mode', max:15, q:'7. 你打算兼职做还是全职做',
+   why:'全职不一定是加分——没有退路的全职风险最高',
+   opts:[
+     {t:'全职做，但有积蓄或其他收入兜底', p:15},
+     {t:'兼职做，有主业收入', p:12},
+     {t:'打算近期辞职全职做（还没辞）', p:6},
+     {t:'已经辞职，目前没有收入来源', p:0}]}
+];
+
+const HARD = [
+  {id:'license', q:'你有企业营业执照吗（个体户不算）', yes:'有', no:'没有'},
+  {id:'payout', q:'你有和执照同名的收款账户吗', yes:'有', no:'没有 / 只有个人卡'}
+];
+
+const FIX = {
+  exp:'先从「跟着别人做一单」开始：选一个已有店铺的同款，把它的标题、图片、定价、评价逐条拆开看，比空想快。',
+  sup:'这周只做一件事：拿一张商品图去 1688 以图搜款，凑够 3 家同款供应商，问清起订量、实重、包装尺寸。',
+  cat:'先锁定一个你生活里最熟的场景（家里、车里、宠物、厨房），从那里面挑品，别从「什么火」倒推。',
+  cash:'先别投钱。用 0 成本方式练一个月：只做选品和核价，把钱留到能算清一单成本的时候。',
+  time:'把每天的时间固定成一个时段（比如晚上 9–10 点），只做一件固定的事，别指望碎片时间。',
+  pc:'先用一周把三件事练熟：装一个软件、填一张在线表格、在手机上改一次商品价格。',
+  mode:'别急着辞职。先用兼职方式跑通第一单，等这件事能稳定覆盖你三个月开支，再决定要不要全职。'
+};
+
+const state = {};
+HARD.forEach(h => state[h.id] = null);
+
+function render() {
+  const box = document.getElementById('qs');
+  let html = '';
+  QS.forEach((item, qi) => {
+    html += `<div class="q"><h2>${item.q}</h2><p class="why">${item.why}</p><div class="opts">`;
+    item.opts.forEach((o, oi) => {
+      html += `<button class="opt" data-q="${qi}" data-o="${oi}">${o.t}<span class="pt">${o.p}分</span></button>`;
+    });
+    html += '</div></div>';
+  });
+  html += `<div class="q"><h2>最后两问：不合规，分数再高也开不了店</h2>
+    <p class="why">这两问不计分，但是硬门槛</p><div class="opts">`;
+  HARD.forEach((h, hi) => {
+    html += `<button class="opt" data-h="${hi}" data-v="1">${h.q}：<b>${h.yes}</b></button>`;
+    html += `<button class="opt" data-h="${hi}" data-v="0">${h.q}：<b>${h.no}</b></button>`;
+  });
+  html += '</div></div>';
+  box.innerHTML = html;
+
+  box.querySelectorAll('button.opt').forEach(btn => {
+    btn.addEventListener('click', () => {
+      const q = btn.dataset.q, h = btn.dataset.h;
+      if (q !== undefined) {
+        state['q' + q] = Number(btn.dataset.o);
+        box.querySelectorAll(`button[data-q="${q}"]`).forEach(b => b.classList.remove('sel'));
+      } else if (h !== undefined) {
+        state[HARD[h].id] = btn.dataset.v === '1';
+        box.querySelectorAll(`button[data-h="${h}"]`).forEach(b => b.classList.remove('sel'));
+      }
+      btn.classList.add('sel');
+      update();
+    });
+  });
+}
+
+function calc() {
+  let total = 0, answered = 0;
+  const per = [];
+  QS.forEach((item, i) => {
+    const sel = state['q' + i];
+    const p = sel === undefined ? 0 : item.opts[sel].p;
+    if (sel !== undefined) answered++;
+    total += p;
+    per.push({id:item.id, p, max:item.max, ratio: p / item.max});
+  });
+  return {total, answered, per};
+}
+
+function update() {
+  const {total, answered, per} = calc();
+  document.getElementById('score').textContent = total;
+  document.getElementById('fill').style.width = total + '%';
+  const res = document.getElementById('result');
+  if (answered < QS.length) { res.style.display = 'none'; return; }
+  res.style.display = 'block';
+
+  let cls, title, line;
+  if (total >= 80) { cls = 'v-go'; title = '可以做，按顺序开始'; line = '你的底子是够的。别急着铺货，先用一个品跑通一单。'; }
+  else if (total >= 60) { cls = 'v-warn'; title = '能做，但先补最弱那一项'; line = '补完再投钱，顺序反了会把本金烧在试错上。'; }
+  else if (total >= 40) { cls = 'v-warn'; title = '先补两项，再谈开店'; line = '现在就开始，大概率是花钱买经验。'; }
+  else { cls = 'v-stop'; title = '现在别投钱'; line = '不是你不行，是条件还不具备。先按下面的方向补。'; }
+
+  // 风控降档：已经辞职、没有收入来源，不允许给「可以做」
+  const noIncome = state['q6'] === 3;
+  if (noIncome) {
+    cls = total >= 40 ? 'v-warn' : 'v-stop';
+    title = '先说这个：没有收入来源，风险最高';
+    line = '生活费会和货款混在一起，一旦第一批货压住，你会被迫低价清货。先补回退路，再谈开店。';
+  }
+
+  // 资金硬底线：低于 5000 元，不给「能做」
+  const brokeBudget = state['q3'] === 4;
+  if (brokeBudget) {
+    cls = 'v-stop';
+    title = '现在别投钱：本金不到 5000';
+    line = '这个预算连一次完整试单都撑不住——货款出去，回款要等一个多月。分数再高也别开始。';
+  }
+
+  // 硬门槛优先：执照 / 收款不过，分数再高也开不了店
+  if (state.license === false || state.payout === false) {
+    cls = 'v-stop';
+    title = '现在开不了店：先补齐资质';
+    line = state.license === false
+      ? '没有企业营业执照，个体户不被接受，平台审核不会通过。'
+      : '没有与执照同名的收款账户，钱进不来，流程走不完。';
+  }
+
+  const hardFails = HARD.filter(h => state[h.id] === false);
+  const weakest = per.slice().sort((a, b) => a.ratio - b.ratio)[0];
+  const wname = {exp:'电商运营经验', sup:'供应链资源', cat:'擅长的产品', cash:'预算资金', time:'每天时间', pc:'电脑基础', mode:'兼职还是全职'}[weakest.id];
+
+  let html = `<div class="verdict ${cls}">${title}<br><span style="font-size:14px;font-weight:500">${line}</span></div>`;
+  html += `<h3>你的分数</h3><div class="big">${total}<small> / 100</small></div>`;
+
+  if (hardFails.length) {
+    html += `<div class="red"><b>先处理这个：</b>`;
+    if (state.license === false) html += `<br>· 没有企业营业执照 → 开不了跨境店。<b>个体户不被接受</b>，要注册公司（自然人独资即可）。注册公司比个体户慢，周期和费用先问当地代办。`;
+    if (state.payout === false) html += `<br>· 没有同名收款账户 → 钱进不来。要开对公账户 + 绑同名跨境收款，个人卡不行。`;
+    html += `<br><b>这两项不过，下面的分数先不用看。</b></div>`;
+  }
+
+  if (noIncome) {
+    html += `<div class="red"><b>关于「已经辞职、没有收入」：</b><br>
+      · 先把 3 个月生活费单独锁起来，这部分钱不许进货款。<br>
+      · 第一批货的预算压到 3000 元以内，宁可少备货，不要赌一次。<br>
+      · 算清一单的净利之前，不要下单采购。</div>`;
+  }
+
+  // 资金不足：真正的坑是回款周期，不是进货价
+  const cashSel = state['q3'];
+  if (cashSel !== undefined && cashSel >= 3) {
+    html += `<div class="red"><b>关于钱：你最大的风险是回款时间，不是进货价。</b><br>
+      · 货款付给 1688 是立刻走的，钱回到你卡上要 45–70 天，这段全靠你自己的现金撑着。<br>
+      · 别用生活费、别借钱、别上杠杆备货；先把一单的净利和回款时间算清，再下单。</div>`;
+  }
+
+  html += `<h3>钱什么时候回来</h3>
+    <ul class="mat">
+      <li>订单发出 → 运输 <b>13–35 天</b> → 买家确认收货</li>
+      <li>确认收货后 <b>T+15 天</b> 保护期（防退货 / 欺诈），资金才转为可提现</li>
+      <li>生成结算单 → 半月结打款：<b>1–15 日</b>的单最晚当月 25 日；<b>16 日–月底</b>的单最晚次月 16 日</li>
+      <li>银行到账 <b>1–3 天</b>，遇节假日顺延</li>
+    </ul>
+    <p class="note"><b>跨境额外门槛：</b>首次结算要累计满 <b>1000 美元 / 6500 元</b>；未达标就累计到月底，次月 1–15 日回款。平台侧从订单完成算大约 15–20 天，但算上运输，你从掏钱到钱回卡实际要 <b>45–70 天</b>。进度在卖家后台 <b>Finance → Payments</b> 看（生成中 / 待支付 / 已支付），退款和佣金会直接从结算里扣。</p>`;
+
+  html += `<h3>最弱的一项</h3><ul><li><b>${wname}</b>（拿了 ${weakest.p} / ${weakest.max} 分）</li></ul>`;
+  html += `<h3>这一项怎么补</h3><p style="margin:6px 0 0;font-size:14.5px">${FIX[weakest.id]}</p>`;
+
+  html += `<h3>开店前要准备的材料</h3>
+    <ul class="mat">
+      <li><b>企业营业执照</b>　自然人独资即可，<b>个体户不支持</b></li>
+      <li><b>法人身份证</b>　正反面，照片清晰、四个角都在</li>
+      <li><b>手机号</b>　能收短信验证码，注册和登录都用它</li>
+      <li><b>邮箱</b>　163 邮箱就可以</li>
+      <li><b>收款账户</b>　户名必须和营业执照主体一致</li>
+      <li><b>EAC 认证 / 品牌授权</b>　只有做受管类目才需要，费用常超过首批货款</li>
+    </ul>
+    <p class="note">平台没有保证金、也没有月租，审核一般 2–10 个工作日。最常见的驳回原因是公司英文名和收款账户户名对不上，注册前先把这两处拼写统一。</p>`;
+
+  const next = total >= 60
+    ? '这周的第一件事：挑 3 个候选品，把「卖多少卢布 / 进货价 / 重量 / 包装尺寸」四个数记下来。'
+    : '这周的第一件事：不建议花钱。先把上面那一项补上，两周后重新测一次。';
+  html += `<h3>这周先做一件</h3><p style="margin:6px 0 0;font-size:14.5px">${next}</p>`;
+  html += `<button class="copy" onclick="copyResult(${total})">复制我的结果</button>`;
+  res.innerHTML = html;
+}
+
+function copyResult(total) {
+  const lines = QS.map((item, i) => {
+    const sel = state['q' + i];
+    return `${item.q} → ${sel === undefined ? '未答' : item.opts[sel].t}（${sel === undefined ? 0 : item.opts[sel].p}/${item.max}）`;
+  }).join('\n');
+  const txt = `OZON 入局自测：${total}/100\n${lines}\n营业执照：${state.license === true ? '有' : '没有'}；同名收款：${state.payout === true ? '有' : '没有'}`;
+  navigator.clipboard.writeText(txt).then(
+    () => { const b = document.querySelector('button.copy'); b.textContent = '已复制 ✓'; setTimeout(() => b.textContent = '复制我的结果', 1800); },
+    () => alert('复制失败，可以长按选择文字')
+  );
+}
+
+render();
+</script>
+</body>
+</html>
