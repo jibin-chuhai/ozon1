@@ -1,9 +1,9 @@
 ---
-name: "ozon"
+name: "ozon1"
 description: "OZON 入局自测：问 7 道题打个分（满分 100），判断你适不适合做俄罗斯 OZON 跨境店。输出分数、结论、最弱项的补法、回款时间（约 45–70 天）和开店要准备的材料清单。当用户问 OZON 能不能做、适不适合我做、做俄罗斯要什么条件、要准备多少钱、兼职还是全职做、开店要准备哪些材料、需要什么资质时触发。"
 metadata:
-  slug: "ozon"
-  version: "1.0.1"
+  slug: "ozon1"
+  version: "1.1.0"
   release-date: "2026-11-04"
   platforms: "windows | macos | linux"
   requires: "无（纯对话，不需要脚本，不需要联网）"

@@ -1,4 +1,4 @@
-# ozon · OZON 入局自测
+# ozon1 · OZON 入局自测
 
 **7 道题，满分 100，判断你适不适合做俄罗斯 OZON 跨境店。**
 
@@ -9,16 +9,16 @@
 **方式一：在 Agent 对话里说一句**
 
 ```text
-安装 jibin-chuhai 的 ozon
+安装 jibin-chuhai 的 ozon1
 ```
 
 **方式二：命令行**
 
 ```bash
-npx -y skills add jibin-chuhai/ozon -g --all
+npx -y skills add jibin-chuhai/ozon1 -g --all
 ```
 
-装好后技能显示为 **ozon**，后面跟着中文说明：OZON 入局自测：问 7 道题打个分……
+装好后技能显示为 **ozon1**，后面跟着中文说明：OZON 入局自测：问 7 道题打个分……
 
 ## 它问什么
 
@@ -54,7 +54,7 @@ npx -y skills add jibin-chuhai/ozon -g --all
 
 ## 它也有一份网页版
 
-`skills/ozon/assets/ozon-selfcheck.html` 是可视化版本，手机浏览器打开就能点，不联网、不上传数据。适合发给不想装技能的人。
+`skills/ozon1/assets/ozon-selfcheck.html` 是可视化版本，手机浏览器打开就能点，不联网、不上传数据。适合发给不想装技能的人。
 
 ## 边界
 
